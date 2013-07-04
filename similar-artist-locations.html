@@ -58,11 +58,25 @@
                                               success: function (mb_data) {
                                                   $('tbody').append(
                                                       $('<tr/>').append(
-                                                          $('<td/>').text(artist.name),
-                                                          $('<td/>').text(
-                                                              $(mb_data).find(
-                                                                  'artist > area > name'
-                                                              ).text()
+                                                          $('<td/>').append(
+                                                              $('<a/>')
+                                                                  .attr({
+                                                                      href: 'http://last.fm/mbid/' + artist.mbid
+                                                                  })
+                                                                  .text(
+                                                                      artist.name
+                                                                  )
+                                                          ),
+                                                          $('<td/>').append(
+                                                              $('<a/>')
+                                                                  .attr({
+                                                                      href: 'http://musicbrainz.org/area/' + $(mb_data).find('artist > area').attr('id')
+                                                                  })
+                                                                  .text(
+                                                                      $(mb_data).find(
+                                                                          'artist > area > name'
+                                                                      ).text()
+                                                                  )
                                                           )
                                                       )
                                                   );
