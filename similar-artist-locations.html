@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+
+<html lang="en-GB" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <link rel="stylesheet" href="/~mavit/peter.css" type="text/css" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="author" content="Peter D. Oliver" />
+    <script type="text/javascript"
+	    src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+    <script type="text/javascript"
+            src="https://raw.github.com/fxb/javascript-last.fm-api/master/lastfm.api.md5.js"></script>
+    <script type="text/javascript"
+            src="https://raw.github.com/fxb/javascript-last.fm-api/master/lastfm.api.js"></script>
+    <script type="text/javascript"
+            src="https://raw.github.com/fxb/javascript-last.fm-api/master/lastfm.api.cache.js"></script>
+    <script type="text/javascript">
+      $(document).ready(
+          function () {
+              var cache = new LastFMCache();
+              var lastfm = new LastFM({
+                  apiKey    : 'f21088bf9097b49ad4e7f487abab981e',
+                  apiSecret : '7ccaec2093e33cded282ec7bc81c6fca',
+                  cache     : cache
+              });
+              
+              lastfm.artist.getSimilar(
+                  {
+                      mbid: '65cc77e1-45cf-4c2a-958c-c7cca472970c'
+                  },
+                  {
+                      success: function (lastfm_data) {
+                          var i = 0;
+                          var interval_id;
+                          var next_mb = function next_mb () {
+                              var artist = lastfm_data.similarartists.artist[i];
+                              if ( artist.mbid == '' ) {
+                                  $('body').append(
+                                      $('<div/>').text(
+                                          artist.name
+                                      )
+                                  );
+                              }
+                              else {
+                                  $.ajax({
+                                      url:
+                                      'https://musicbrainz.org/ws/2/artist/'
+                                          + artist.mbid,
+                                      dataType: 'xml',
+                                      success: function (mb_data) {
+                                          $('tbody').append(
+                                              $('<tr/>').append(
+                                                  $('<td/>').text(artist.name),
+                                                  $('<td/>').text(
+                                                      $(mb_data).find(
+                                                          'artist > area > name'
+                                                      ).text()
+                                                  )
+                                              )
+                                          );
+                                      }
+                                  });
+                              }
+ 
+                              if ( i++ 
+                                   >= lastfm_data.similarartists.artist.length
+                              ) {
+                                  window.clearInterval(interval_id);
+                              }
+                          };
+                          interval_id = window.setInterval(next_mb, 1000);
+                      },
+                      error: function (code, message) {
+                      }
+                  }
+              );
+          }
+      );
+    </script>
+</head>
+
+<body>
+  <h1>Proof-of-concept Last.FM similar artist locator</h1>
+  <p>Prompted by <a
+  href="http://www.anorakforum.com/viewtopic.php?p=223561#p223561">this</a>.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Artist</th>
+        <th>Area</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</body>
+</html>
