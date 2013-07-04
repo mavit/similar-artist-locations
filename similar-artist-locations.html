@@ -43,9 +43,11 @@
                                   var next_mb = function next_mb () {
                                       var artist = lastfm_data.similarartists.artist[i];
                                       if ( artist.mbid == '' ) {
-                                          $('body').append(
-                                              $('<div/>').text(
-                                                  artist.name
+                                          $('tbody').append(
+                                              $('<tr/>').append(
+                                                  $('<td/>').text(
+                                                      artist.name
+                                                  )
                                               )
                                           );
                                       }
