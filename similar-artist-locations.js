@@ -26,7 +26,7 @@ $(document).ready( function () {
         cache     : cache
     });
 
-    var areas = {};
+    var popups = {};
 
     $('form#artist').submit(fetch_artist_info);
 
@@ -79,8 +79,14 @@ $(document).ready( function () {
                     )
                 );
 
-                if ( typeof areas[area_mbid] === 'undefined' ) {
-                    areas[area_mbid] = area_name;
+                if ( typeof popups[area_mbid] === 'undefined' ) {
+                    popups[area_mbid] = L.popup().setContent(
+                        $('<div/>').append(
+                            $('<strong/>').text(area_name)
+                        ).append(
+                            $('<ul/>')
+                        ).get(0)
+                    );
                     $.ajax({
                         url: 'http://musicbrainz.org/ws/2/area/'
                             + encodeURIComponent(area_mbid) + '?inc=url-rels',
@@ -88,6 +94,9 @@ $(document).ready( function () {
                         success: handle_mb_area_reponse
                     });
                 }
+                var content = popups[area_mbid].getContent();
+                $(content).find('ul').append($('<li/>').text(artist.name));
+                popups[area_mbid].setContent(content);
             }
             
             if ( artist.mbid == '' ) {
@@ -127,42 +136,32 @@ $(document).ready( function () {
             'area > relation-list > relation[type=geonames] > target'
         ).text();  // FIXME: validate this.
         
-        $('table#areas > tbody').append(
-            $('<tr/>').append(
-                $('<td/>').append(
-                    $('<a/>')
-                        .attr({
-                            href: geonames_url
-                        })
-                        .text(area_name)
-                )
-            )
-        );
-        
         $.ajax({
             url: encodeURI(geonames_url + 'about.rdf'),
             dataType: 'xml',
             success: handle_geonames_reponse
         });
-    }
     
-    function handle_geonames_reponse (geonames_data) {
-        var name = $(geonames_data).find('gn\\:name').text();
-        var latitude = $(geonames_data).find('wgs84_pos\\:lat').text();
-        var longitude = $(geonames_data).find('wgs84_pos\\:long').text();
-
-        L.mapbox.marker.style(
-            {
-                'type': 'Feature',
-                'geometry': {
-                    'type': 'Point',
-                },
-                'properties': {
-                    'title': name,
-                    'marker-color': '#8a1903',
-                    'marker-symbol': 'music',
-                }
-            }, [latitude, longitude]
-        ).addTo(map);
+        function handle_geonames_reponse (geonames_data) {
+            var name = $(geonames_data).find('gn\\:name').text();
+            var latitude = $(geonames_data).find('wgs84_pos\\:lat').text();
+            var longitude = $(geonames_data).find('wgs84_pos\\:long').text();
+            
+            L.mapbox.marker.style(
+                {
+                    'type': 'Feature',
+                    'geometry': {
+                        'type': 'Point',
+                    },
+                    'properties': {
+                        'title': name,
+                        'marker-color': '#8a1903',
+                        'marker-symbol': 'music',
+                    }
+                }, [latitude, longitude]
+            ).bindPopup(
+                popups[area_mbid]
+            ).addTo(map);
+        }
     }
 });
