@@ -26,7 +26,7 @@ $(document).ready(
         });
         
         $('form#artist').submit(
-            function (event) {
+            function fetch_artist_info (event) {
                 event.preventDefault();
                 $('input#submit').attr('disabled', 'disabled');
                 lastfm.artist.getSimilar(
@@ -34,70 +34,7 @@ $(document).ready(
                         mbid: $('input#mbid').val()
                     },
                     {
-                        success: function (lastfm_data) {
-                            $('caption').text(
-                                'Artists similar to ' + lastfm_data.similarartists['@attr'].artist
-                            );
-                            
-                            var i = 0;
-                            var interval_id;
-                            var next_mb = function next_mb () {
-                                var artist = lastfm_data.similarartists.artist[i];
-                                if ( artist.mbid == '' ) {
-                                    $('tbody').append(
-                                        $('<tr/>').append(
-                                            $('<td/>').text(
-                                                artist.name
-                                            )
-                                        )
-                                    );
-                                }
-                                else {
-                                    $.ajax({
-                                        url:
-                                        'http://musicbrainz.org/ws/2/artist/'
-                                            + artist.mbid,
-                                        dataType: 'xml',
-                                        success: function (mb_data) {
-                                            $('tbody').append(
-                                                $('<tr/>').append(
-                                                    $('<td/>').append(
-                                                        $('<a/>')
-                                                            .attr({
-                                                                href: 'http://last.fm/mbid/' + artist.mbid
-                                                            })
-                                                            .text(
-                                                                artist.name
-                                                            )
-                                                    ),
-                                                    $('<td/>').append(
-                                                        $('<a/>')
-                                                            .attr({
-                                                                href: 'http://musicbrainz.org/area/' + $(mb_data).find('artist > area').attr('id')
-                                                            })
-                                                            .text(
-                                                                $(mb_data).find(
-                                                                    'artist > area > name'
-                                                                ).text()
-                                                            )
-                                                    )
-                                                )
-                                            );
-                                        }
-                                    });
-                                }
-                                
-                                if ( ++i
-                                     >= lastfm_data.similarartists.artist.length
-                                   ) {
-                                    window.clearInterval(interval_id);
-                                }
-                            };
-                            // You're not supposed to hit the MusicBrainz
-                            // webservice more than once per second on
-                            // average.
-                            interval_id = window.setInterval(next_mb, 1000);
-                        },
+                        success: handle_lastfm_response,
                         error: function (code, message) {
                         }
                     }
@@ -106,3 +43,65 @@ $(document).ready(
         );
     }
 );
+
+function handle_lastfm_response (lastfm_data) {
+    $('caption').text(
+        'Artists similar to ' + lastfm_data.similarartists['@attr'].artist
+    );
+
+    var i = 0;
+    var interval_id;
+    var next_mb_artist = function next_mb_artist () {
+        var artist = lastfm_data.similarartists.artist[i];
+        function handle_mb_artist_reponse (mb_data) {
+            $('tbody').append(
+                $('<tr/>').append(
+                    $('<td/>').append(
+                        $('<a/>')
+                            .attr({
+                                href: 'http://last.fm/mbid/' + artist.mbid
+                            })
+                            .text(artist.name)
+                    ),
+                    $('<td/>').append(
+                        $('<a/>')
+                            .attr({
+                                href: 'http://musicbrainz.org/area/'
+                                    + $(mb_data).find('artist > area').attr('id')
+                            })
+                            .text(
+                                $(mb_data).find(
+                                    'artist > area > name'
+                                ).text()
+                            )
+                    )
+                )
+            );
+        }
+
+        if ( artist.mbid == '' ) {
+            $('tbody').append(
+                $('<tr/>').append(
+                    $('<td/>').text(
+                        artist.name
+                    )
+                )
+            );
+        }
+        else {
+            $.ajax({
+                url: 'http://musicbrainz.org/ws/2/artist/' + artist.mbid,
+                dataType: 'xml',
+                success: handle_mb_artist_reponse
+            });
+        }
+
+        if ( ++i >= lastfm_data.similarartists.artist.length ) {
+            window.clearInterval(interval_id);
+        }
+    };
+
+    // You're not supposed to hit the MusicBrainz webservice more than
+    // once per second on average.
+    interval_id = window.setInterval(next_mb_artist, 1000);
+}
