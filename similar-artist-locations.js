@@ -50,6 +50,8 @@ $(document).ready( function () {
             'Artists similar to ' + lastfm_data.similarartists['@attr'].artist
         );
         
+        // var artist_list = [].concat(lastfm_data.similarartists.artist);
+
         var i = 0;
         var interval_id;
         var next_mb_artist = function next_mb_artist () {
@@ -136,8 +138,14 @@ $(document).ready( function () {
         var area_mbid = $(mb_data).find('area').attr('id');
         var geonames_url = $(mb_data).find(
             'area > relation-list > relation[type=geonames] > target'
-        ).text();
+        ).slice(0, 1).text();
 
+        if ( geonames_url == '' ) {
+            $('a[href="http://musicbrainz.org/area/' + encodeURIComponent(area_mbid) + '"]').parent().append(' (no coordinates for this location)');
+            return;
+        }
+
+        // FIXME: Is this appropriate?
         function GeonamesUrlFormatException(value) {
             this.value = value;
             this.message = "does not look like a valid GeoNames URL";
