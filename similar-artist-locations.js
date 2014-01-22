@@ -54,6 +54,7 @@ $(document).ready( function () {
         var interval_id;
         var next_mb_artist = function next_mb_artist () {
             var artist = lastfm_data.similarartists.artist[i];
+
             function handle_mb_artist_reponse (mb_data) {
                 var area_mbid = $(mb_data).find('artist > area').attr('id')
                 var area_name = $(mb_data).find('artist > area > name').text()
@@ -79,24 +80,26 @@ $(document).ready( function () {
                     )
                 );
 
-                if ( typeof popups[area_mbid] === 'undefined' ) {
-                    popups[area_mbid] = L.popup().setContent(
-                        $('<div/>').append(
-                            $('<strong/>').text(area_name)
-                        ).append(
-                            $('<ul/>')
-                        ).get(0)
-                    );
-                    $.ajax({
-                        url: 'http://musicbrainz.org/ws/2/area/'
-                            + encodeURIComponent(area_mbid) + '?inc=url-rels',
-                        dataType: 'xml',
-                        success: handle_mb_area_reponse
-                    });
+                if ( area_mbid != null ) {
+                    if ( typeof popups[area_mbid] === 'undefined' ) {
+                        popups[area_mbid] = L.popup().setContent(
+                            $('<div/>').append(
+                                $('<strong/>').text(area_name)
+                            ).append(
+                                $('<ul/>')
+                            ).get(0)
+                        );
+                        $.ajax({
+                            url: 'http://musicbrainz.org/ws/2/area/'
+                                + encodeURIComponent(area_mbid) + '?inc=url-rels',
+                            dataType: 'xml',
+                            success: handle_mb_area_reponse
+                        });
+                    }
+                    var content = popups[area_mbid].getContent();
+                    $(content).find('ul').append($('<li/>').text(artist.name));
+                    popups[area_mbid].setContent(content);
                 }
-                var content = popups[area_mbid].getContent();
-                $(content).find('ul').append($('<li/>').text(artist.name));
-                popups[area_mbid].setContent(content);
             }
             
             if ( artist.mbid == '' ) {
@@ -131,11 +134,21 @@ $(document).ready( function () {
     
     function handle_mb_area_reponse (mb_data) {
         var area_mbid = $(mb_data).find('area').attr('id');
-        var area_name = $(mb_data).find('area > name').text();
         var geonames_url = $(mb_data).find(
             'area > relation-list > relation[type=geonames] > target'
-        ).text();  // FIXME: validate this.
-        
+        ).text();
+
+        function GeonamesUrlFormatException(value) {
+            this.value = value;
+            this.message = "does not look like a valid GeoNames URL";
+            this.toString = function() {
+                return this.value + this.message
+            };
+        }
+        if ( ! /^https?:\/\/sws.geonames.org\/\d+\/$/.test(geonames_url) ) {
+            throw GeonamesUrlFormatException(geonames_url);
+        };
+
         $.ajax({
             url: encodeURI(geonames_url + 'about.rdf'),
             dataType: 'xml',
@@ -144,8 +157,12 @@ $(document).ready( function () {
     
         function handle_geonames_reponse (geonames_data) {
             var name = $(geonames_data).find('gn\\:name').text();
-            var latitude = $(geonames_data).find('wgs84_pos\\:lat').text();
-            var longitude = $(geonames_data).find('wgs84_pos\\:long').text();
+            var latitude = Number(
+                $(geonames_data).find('wgs84_pos\\:lat').text()
+            );
+            var longitude = Number(
+                $(geonames_data).find('wgs84_pos\\:long').text()
+            );
             
             L.mapbox.marker.style(
                 {
