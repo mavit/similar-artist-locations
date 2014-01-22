@@ -60,7 +60,6 @@
           clear: both;
       }
     </style>
-    </style>
 </head>
 
 <body>
@@ -76,9 +75,11 @@
 
   <div>
     <form id="artist">
-      <label>MusicBrainz ID:</label>
-      <input id="mbid" name="mbid" type="text" size="36"
-             value="65cc77e1-45cf-4c2a-958c-c7cca472970c" />
+      <label>
+        MusicBrainz ID:
+        <input id="mbid" name="mbid" type="text" size="36" maxlength="36" 
+               pattern="^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$" />
+      </label>
       <input id="submit" type="submit" value="Go!" />
     </form>
   </div>
