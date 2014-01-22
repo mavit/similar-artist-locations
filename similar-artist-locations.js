@@ -49,6 +49,7 @@ $(document).ready( function () {
         $('table#artists > caption').text(
             'Artists similar to ' + lastfm_data.similarartists['@attr'].artist
         );
+        $('div#sidebar').fadeIn();
         
         // var artist_list = [].concat(lastfm_data.similarartists.artist);
 
