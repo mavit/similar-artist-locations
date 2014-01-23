@@ -119,8 +119,16 @@ $(document).ready( function () {
             var artist = lastfm_data.similarartists.artist[i];
 
             function handle_mb_artist_reponse (mb_data) {
-                var area_mbid = $(mb_data).find('artist > area').attr('id')
-                var area_name = $(mb_data).find('artist > area > name').text()
+                var area;
+                var area_selectors = ['artist > begin-area', 'artist > area'];
+                for ( var j = 0; j < area_selectors.length; ++j ) {
+                    area = $(mb_data).find(area_selectors[j])
+                    if ( area.length > 0 ) {
+                        break;
+                    }
+                }
+                var area_mbid = area.attr('id');
+                var area_name = area.children('name').text();
                 
                 $('table#artists > tbody').append(
                     $('<tr/>').append(
