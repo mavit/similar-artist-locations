@@ -1,5 +1,4 @@
 Pull location from WikiData if no GeoNames link.
-Use history API when selecting an artist.
 Add a spinner.
 Link out to Family Trees, Amazon, etc.
 Fix disabled buttons on page reload.
