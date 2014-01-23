@@ -27,6 +27,8 @@ $(document).ready( function () {
         cache     : cache
     });
 
+    var interval_id;
+    var markers = [];
     var popups = {};
     var mbid;
 
@@ -48,6 +50,7 @@ $(document).ready( function () {
     function pick_artist (event) {
         event.preventDefault();
         $('form#artist-picker').slideUp();
+        $('table#artists > tbody').fadeOut();
         fetch_artist_info(mbid);
     }
 
@@ -106,15 +109,28 @@ $(document).ready( function () {
     }
 
     function handle_lastfm_response (lastfm_data) {
+
+        // Clean up any previous runs:
+        if ( interval_id !== null ) {
+            window.clearInterval(interval_id);
+        }
+        markers.forEach( function (m) {
+            map.removeLayer(m);
+        });
+        markers = [];
+        popups = {};
+
+        $('table#artists > tbody').empty();
         $('table#artists > caption').text(
             'Artists similar to ' + lastfm_data.similarartists['@attr'].artist
         );
-        $('div#sidebar').fadeIn();
-        
+
+        $('table#artists > tbody').fadeIn();
+        $('div#sidebar').show('400');
+
         // var artist_list = [].concat(lastfm_data.similarartists.artist);
 
         var i = 0;
-        var interval_id;
         var next_mb_artist = function next_mb_artist () {
             var artist = lastfm_data.similarartists.artist[i];
 
@@ -193,7 +209,6 @@ $(document).ready( function () {
             }
             
             // window.clearInterval(interval_id); //abort!
-            
             if ( ++i >= lastfm_data.similarartists.artist.length ) {
                 window.clearInterval(interval_id);
             }
@@ -245,7 +260,7 @@ $(document).ready( function () {
                 $(geonames_data).find('wgs84_pos\\:long').text()
             );
             
-            L.mapbox.marker.style(
+            var marker = L.mapbox.marker.style(
                 {
                     'type': 'Feature',
                     'geometry': {
@@ -257,9 +272,10 @@ $(document).ready( function () {
                         'marker-symbol': 'music',
                     }
                 }, [latitude, longitude]
-            ).bindPopup(
-                popups[area_mbid]
-            ).addTo(map);
+            );
+            markers.push(marker);
+            marker.bindPopup(popups[area_mbid]);
+            marker.addTo(map);
         }
     }
 });
