@@ -1,6 +1,7 @@
 Prefer "founded" location to principal location.
 Pull location from WikiData if no GeoNames link.
 Clear existing data on new submit.
+Use history API when selecting an artist.
 Add a spinner.
 Internalise links in sidebar.
 Link out to Family Trees, Amazon, etc.
