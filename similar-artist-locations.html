@@ -43,6 +43,13 @@
     <script type="text/javascript" src="similar-artist-locations.js"></script>
 
     <style type="text/css">
+      form#artist-lookup {
+          display: none;
+      }
+      form#artist-picker {
+          display: none;
+          padding-top: 1em;
+      }
       div#sidebar {
           display: none;
           float: right;
@@ -74,13 +81,31 @@
   </header>
 
   <div>
-    <form id="artist">
+    <form id="artist-lookup">
       <label>
         MusicBrainz ID:
         <input id="mbid" name="mbid" type="text" size="36" maxlength="36" 
                pattern="^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$" />
       </label>
-      <input id="submit" type="submit" value="Go!" />
+      <input type="submit" value="Go!" />
+    </form>
+    <form id="artist-search">
+      <label>
+        Artist name: <input id="name" name="name" type="search" size="36" />
+      </label>
+      <input type="submit" value="Search" />
+    </form>
+    <form id="artist-picker">
+      <table id="search-results">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Disambiguation</th>
+            <th>Area</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
     </form>
   </div>
 

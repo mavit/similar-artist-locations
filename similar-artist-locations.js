@@ -18,6 +18,7 @@
 
 $(document).ready( function () {
     var map = L.mapbox.map('map', 'mavit.h2hp2k2k').setView([25, 0], 2);
+    var mb_api_url = 'http://musicbrainz.org/ws/2/';
 
     var cache = new LastFMCache();
     var lastfm = new LastFM({
@@ -27,15 +28,74 @@ $(document).ready( function () {
     });
 
     var popups = {};
+    var mbid;
 
-    $('form#artist').submit(fetch_artist_info);
+    $('form#artist-lookup').submit(lookup_artist);
+    $('form#artist-search').submit(search_artists);
+    $('form#artist-picker').submit(pick_artist);
 
-    function fetch_artist_info (event) {
+    function search_artists (event) {
         event.preventDefault();
-        $('input#submit').attr('disabled', 'disabled');
+        $('form#artist-picker').slideUp();
+        $.ajax({
+            url: mb_api_url + 'artist/?query='
+                + encodeURIComponent($('input#name').val()),
+            dataType: 'xml',
+            success: handle_mb_search_response
+        });
+    }
+
+    function pick_artist (event) {
+        event.preventDefault();
+        $('form#artist-picker').slideUp();
+        fetch_artist_info(mbid);
+    }
+
+    function handle_mb_search_response (mb_data) {
+        $('table#search-results > tbody').empty();
+        $(mb_data).find('artist-list > artist').each( function (i) {
+            $('table#search-results > tbody').append(
+                $('<tr/>').append(
+                    $('<td/>').append(
+                        $('<button/>').attr({
+                            value: $(this).attr('id')
+                        }).text(
+                            $(this).children('name').text()
+                        )
+                    ),
+                    $('<td/>').append(
+                        $(this).find('disambiguation').text()
+                    ),
+                    $('<td/>').append(
+                        $('<a/>').attr({
+                            href: 'http://musicbrainz.org/area/'
+                                + encodeURIComponent(
+                                    $(this).find('artist > area').attr('id')
+                                )
+                        }).text(
+                            $(this).find('artist > area > name').text()
+                        )
+                    )
+                )
+            );
+        });
+        $('form#artist-picker button').click( function () {
+            mbid = this.value;
+            $('input#name').val($(this).text());
+        });
+        $('form#artist-picker').slideDown();
+    }
+
+    function lookup_artist (event) {
+        event.preventDefault();
+        $('form#artist-lookup input[type=submit]').attr('disabled', 'disabled');
+        fetch_artist_info($('input#mbid').val());
+    }
+
+    function fetch_artist_info (mbid) {
         lastfm.artist.getSimilar(
             {
-                mbid: $('input#mbid').val()
+                mbid: mbid
             },
             {
                 success: handle_lastfm_response,
@@ -93,8 +153,9 @@ $(document).ready( function () {
                             ).get(0)
                         );
                         $.ajax({
-                            url: 'http://musicbrainz.org/ws/2/area/'
-                                + encodeURIComponent(area_mbid) + '?inc=url-rels',
+                            url: mb_api_url + 'area/'
+                                + encodeURIComponent(area_mbid)
+                                + '?inc=url-rels',
                             dataType: 'xml',
                             success: handle_mb_area_reponse
                         });
@@ -116,7 +177,7 @@ $(document).ready( function () {
             }
             else {
                 $.ajax({
-                    url: 'http://musicbrainz.org/ws/2/artist/'
+                    url: mb_api_url + 'artist/'
                         + encodeURIComponent(artist.mbid),
                     dataType: 'xml',
                     success: handle_mb_artist_reponse
@@ -142,7 +203,10 @@ $(document).ready( function () {
         ).slice(0, 1).text();
 
         if ( geonames_url == '' ) {
-            $('a[href="http://musicbrainz.org/area/' + encodeURIComponent(area_mbid) + '"]').parent().append(' (no coordinates for this location)');
+            $(
+                'a[href="http://musicbrainz.org/area/'
+                    + encodeURIComponent(area_mbid) + '"]'
+            ).parent().append(' (no coordinates for this location)');
             return;
         }
 
