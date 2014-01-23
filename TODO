@@ -1,0 +1,11 @@
+Prefer "founded" location to principal location.
+Pull location from WikiData if no GeoNames link.
+Clear existing data on new submit.
+Add a spinner.
+Internalise links in sidebar.
+Link out to Family Trees, Amazon, etc.
+Fix disabled buttons on page reload.
+New title?
+Use jQuery UI to slide sidebar.  http://api.jqueryui.com/slide-effect/
+Style map to fill screen?
+Host at mavit.org.uk.
