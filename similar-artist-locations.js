@@ -36,6 +36,10 @@ $(document).ready( function () {
     $('form#artist-search').submit(search_artists);
     $('form#artist-picker').submit(pick_artist);
 
+    if ( mbid = $.url().param('mbid') ) {
+        fetch_artist_info(mbid);
+    }
+
     function search_artists (event) {
         event.preventDefault();
         $('form#artist-picker').slideUp();
@@ -151,7 +155,7 @@ $(document).ready( function () {
                         $('<td/>').append(
                             $('<a/>')
                                 .attr({
-                                    href: 'http://last.fm/mbid/' +
+                                    href: '?mbid=' +
                                         encodeURIComponent(artist.mbid)
                                 })
                                 .text(artist.name)
@@ -209,6 +213,9 @@ $(document).ready( function () {
             }
             
             // window.clearInterval(interval_id); //abort!
+            // if ( ++i >= 10 ) {
+            //     window.clearInterval(interval_id);
+            // }
             if ( ++i >= lastfm_data.similarartists.artist.length ) {
                 window.clearInterval(interval_id);
             }
