@@ -105,6 +105,7 @@ $(document).ready( function () {
     }
 
     function fetch_artist_info (mbid) {
+        $('img.spinner').slideDown();
         lastfm.artist.getSimilar(
             {
                 mbid: mbid
@@ -220,9 +221,11 @@ $(document).ready( function () {
             // window.clearInterval(interval_id); //abort!
             // if ( ++i >= 10 ) {
             //     window.clearInterval(interval_id);
+            //     $('img.spinner').slideUp();
             // }
             if ( ++i >= lastfm_data.similarartists.artist.length ) {
                 window.clearInterval(interval_id);
+                $('img.spinner').slideUp();
             }
         };
         

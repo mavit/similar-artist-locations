@@ -1,5 +1,4 @@
 Pull location from WikiData if no GeoNames link.
-Add a spinner.
 Add the selected artist to the map.
 Link out to Family Trees, Amazon, etc.
 Fix disabled buttons on page reload.
