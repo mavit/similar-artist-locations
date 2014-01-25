@@ -20,7 +20,7 @@
 
 <html lang="en-GB" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Last.FM similar artist locator</title>
+    <title>Music Scene Map</title>
     <link rel="stylesheet" href="http://www.mavit.org.uk/html5.css" type="text/css" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <meta name="author" content="Peter D. Oliver" />
@@ -44,7 +44,7 @@
     <script type="text/javascript"
             src="https://api.tiles.mapbox.com/mapbox.js/v1.6.0/mapbox.js"></script>
 
-    <script type="text/javascript" src="similar-artist-locations.js"></script>
+    <script type="text/javascript" src="music-scene-map.js"></script>
 
     <style type="text/css">
       form#artist-lookup {
@@ -83,10 +83,9 @@
   <a href="https://github.com/mavit/similar-artist-locations"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://a248.e.akamai.net/camo.github.com/7afbc8b248c68eb468279e8c17986ad46549fb71/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" /></a>
 
   <header>
-    <h1>Last.FM similar artist locator</h1>
+    <h1>Music Scene Map</h1>
     <p class="subhead">
-      Prompted by <a
-      href="http://www.anorakforum.com/viewtopic.php?p=223561#p223561">this</a>.
+      Similar artists in similar places.
     </p>
   </header>
 
@@ -113,7 +112,7 @@
           <tr>
             <th>Name</th>
             <th>Disambiguation</th>
-            <th>Area</th>
+            <th>Location</th>
           </tr>
         </thead>
         <tbody></tbody>
@@ -128,7 +127,7 @@
       <thead>
         <tr>
           <th>Artist</th>
-          <th>Area</th>
+          <th>Location</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -139,7 +138,28 @@
 
   <footer>
     <p>
-      <a href="http://www.mavit.org.uk/">Peter Oliver</a>
+      <cite>Music Scene Map</cite> by <a href="http://www.mavit.org.uk/">Peter
+      Oliver</a>, from an idea on <a
+      href="http://www.anorakforum.com/viewtopic.php?p=223561#p223561">Anorak
+      Forum</a>.
+    </p>
+
+    <p>
+      Artist Locations provided by <a
+      href="http://musicbrainz.org/">MusicBrainz</a>.  Please go and
+      refine them where you can!<br />
+      
+      Similar artist data provided by <a
+      href="http://www.last.fm/">Last.fm</a>.<br />
+
+      Coordinates provided by <a
+      href="http://www.geonames.org/">GeoNames</a> (licensed under a <a
+      href="http://creativecommons.org/licenses/by/3.0/">Creative
+      Commons Attribution 3.0 License</a>).<br />
+
+      Map © <a href="http://www.openstreetmap.org/">OpenStreetMap</a> contributors (licensed user the <a href="http://opendatacommons.org/licenses/odbl/">Open Data Commons Open Database License</a>).<br />
+
+      Map rendering by <a href="https://www.mapbox.com/">Mapbox</a>.
     </p>
   </footer>
 </body>

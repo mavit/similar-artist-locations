@@ -140,9 +140,9 @@ $(document).ready( function () {
     }
 
     function handle_lastfm_response (lastfm_data) {
-        $('table#artists > caption').text(
-            'Artists similar to ' + lastfm_data.similarartists['@attr'].artist
-        );
+        var artist_name = lastfm_data.similarartists['@attr'].artist;
+        $('table#artists > caption').text('Artists similar to ' + artist_name);
+        document.title = artist_name + ' - Music Scene Map';
 
         var i = 0;
         var next_mb_artist = function next_mb_artist () {
