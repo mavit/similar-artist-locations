@@ -105,7 +105,28 @@ $(document).ready( function () {
     }
 
     function fetch_artist_info (mbid) {
+
+        // Clean up any previous runs:
+        if ( interval_id !== null ) {
+            window.clearInterval(interval_id);
+        }
+        markers.forEach( function (m) {
+            map.removeLayer(m);
+        });
+        markers = [];
+        popups = {};
+
+        $('table#artists > tbody').empty();
+        $('table#artists > caption').empty();
+
         $('img.spinner').slideDown();
+        $('table#artists > tbody').fadeIn();
+        $('div#sidebar').show('400');
+
+        submit_mb_artist_request({
+            mbid: mbid
+        });
+
         lastfm.artist.getSimilar(
             {
                 mbid: mbid
@@ -119,87 +140,14 @@ $(document).ready( function () {
     }
 
     function handle_lastfm_response (lastfm_data) {
-
-        // Clean up any previous runs:
-        if ( interval_id !== null ) {
-            window.clearInterval(interval_id);
-        }
-        markers.forEach( function (m) {
-            map.removeLayer(m);
-        });
-        markers = [];
-        popups = {};
-
-        $('table#artists > tbody').empty();
         $('table#artists > caption').text(
             'Artists similar to ' + lastfm_data.similarartists['@attr'].artist
         );
-
-        $('table#artists > tbody').fadeIn();
-        $('div#sidebar').show('400');
-
-        // var artist_list = [].concat(lastfm_data.similarartists.artist);
 
         var i = 0;
         var next_mb_artist = function next_mb_artist () {
             var artist = lastfm_data.similarartists.artist[i];
 
-            function handle_mb_artist_reponse (mb_data) {
-                var area;
-                var area_selectors = ['artist > begin-area', 'artist > area'];
-                for ( var j = 0; j < area_selectors.length; ++j ) {
-                    area = $(mb_data).find(area_selectors[j])
-                    if ( area.length > 0 ) {
-                        break;
-                    }
-                }
-                var area_mbid = area.attr('id');
-                var area_name = area.children('name').text();
-                
-                $('table#artists > tbody').append(
-                    $('<tr/>').append(
-                        $('<td/>').append(
-                            $('<a/>')
-                                .attr({
-                                    href: '?mbid=' +
-                                        encodeURIComponent(artist.mbid)
-                                })
-                                .text(artist.name)
-                        ),
-                        $('<td/>').append(
-                            $('<a/>')
-                                .attr({
-                                    href: 'http://musicbrainz.org/area/'
-                                        + encodeURIComponent(area_mbid)
-                                })
-                                .text(area_name)
-                        )
-                    )
-                );
-
-                if ( area_mbid != null ) {
-                    if ( typeof popups[area_mbid] === 'undefined' ) {
-                        popups[area_mbid] = L.popup().setContent(
-                            $('<div/>').append(
-                                $('<strong/>').text(area_name)
-                            ).append(
-                                $('<ul/>')
-                            ).get(0)
-                        );
-                        $.ajax({
-                            url: mb_api_url + 'area/'
-                                + encodeURIComponent(area_mbid)
-                                + '?inc=url-rels',
-                            dataType: 'xml',
-                            success: handle_mb_area_reponse
-                        });
-                    }
-                    var content = popups[area_mbid].getContent();
-                    $(content).find('ul').append($('<li/>').text(artist.name));
-                    popups[area_mbid].setContent(content);
-                }
-            }
-            
             if ( artist.mbid == '' ) {
                 $('table#artists > tbody').append(
                     $('<tr/>').append(
@@ -210,12 +158,7 @@ $(document).ready( function () {
                 );
             }
             else {
-                $.ajax({
-                    url: mb_api_url + 'artist/'
-                        + encodeURIComponent(artist.mbid),
-                    dataType: 'xml',
-                    success: handle_mb_artist_reponse
-                });
+                submit_mb_artist_request(artist);
             }
             
             // window.clearInterval(interval_id); //abort!
@@ -232,6 +175,73 @@ $(document).ready( function () {
         // You're not supposed to hit the MusicBrainz webservice more than
         // once per second on average.
         interval_id = window.setInterval(next_mb_artist, 1000);
+    }
+    
+    function submit_mb_artist_request (artist) {
+        $.ajax({
+            url: mb_api_url + 'artist/'
+                + encodeURIComponent(artist.mbid),
+            dataType: 'xml',
+            success: function (data) {
+                handle_mb_artist_reponse(artist, data);
+            }
+        });
+    }
+
+    function handle_mb_artist_reponse (artist, mb_data) {
+        var area;
+        var area_selectors = ['artist > begin-area', 'artist > area'];
+        for ( var j = 0; j < area_selectors.length; ++j ) {
+            area = $(mb_data).find(area_selectors[j])
+            if ( area.length > 0 ) {
+                break;
+            }
+        }
+        var artist_name = $(mb_data).find('artist > name').text();
+        var artist_mbid = artist.mbid;
+        var area_mbid = area.attr('id');
+        var area_name = area.children('name').text();
+        
+        $('table#artists > tbody').append(
+            $('<tr/>').append(
+                $('<td/>').append(
+                    $('<a/>')
+                        .attr({
+                            href: '?mbid=' + encodeURIComponent(artist_mbid)
+                        })
+                        .text(artist_name)
+                ),
+                $('<td/>').append(
+                    $('<a/>')
+                        .attr({
+                            href: 'http://musicbrainz.org/area/'
+                                + encodeURIComponent(area_mbid)
+                        })
+                        .text(area_name)
+                )
+            )
+        );
+        
+        if ( area_mbid != null ) {
+            if ( typeof popups[area_mbid] === 'undefined' ) {
+                popups[area_mbid] = L.popup().setContent(
+                    $('<div/>').append(
+                        $('<strong/>').text(area_name)
+                    ).append(
+                        $('<ul/>')
+                    ).get(0)
+                );
+                $.ajax({
+                    url: mb_api_url + 'area/' + encodeURIComponent(area_mbid)
+                        + '?inc=url-rels',
+                    dataType: 'xml',
+                    success: handle_mb_area_reponse
+                });
+            }
+            var content = popups[area_mbid].getContent();
+            $(content).find('ul').append($('<li/>').text(artist_name));
+            popups[area_mbid].setContent(content);
+        }
     }
     
     function handle_mb_area_reponse (mb_data) {

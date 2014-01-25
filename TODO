@@ -1,9 +1,10 @@
-Pull location from WikiData if no GeoNames link.
-Add the selected artist to the map.
+Smarter queuing of requests MusicBrainz requests.
+Caching of MusicBrainz requests.
 Link out to Family Trees, Amazon, etc.
 Fix disabled buttons on page reload.
 New title?
 Style map to fill screen?
 Investigate bower (https://github.com/bower/bower) for dependency management.
 Error handling!
+Pull location from WikiData if no GeoNames link.
 Host at mavit.org.uk.
