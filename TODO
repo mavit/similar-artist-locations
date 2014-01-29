@@ -1,7 +1,6 @@
 Caching of MusicBrainz requests.
 Link out to Family Trees, Amazon, etc.
 Refactor MusicBrainz request queuing.
-Style map to fill screen?
 Investigate bower (https://github.com/bower/bower) for dependency management.
 Error handling!
 Pull location from WikiData if no GeoNames link.

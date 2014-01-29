@@ -16,7 +16,21 @@
 // along with similar-artist-locations.  If not, see
 // <http://www.gnu.org/licenses/>.
 
+function resize () {
+    var content_height = $(window).height() - $('header').outerHeight(true)
+        - $('.controls').outerHeight(true) - 25;
+
+    $("div#map").height(content_height);
+    $("div#sidebar").css({
+        'max-height': content_height
+    });
+};
+
+$(window).resize(resize);
+
 $(document).ready( function () {
+    resize();
+
     var map = L.mapbox.map('map', 'mavit.h2hp2k2k').setView([25, 0], 2);
     var mb_api_url = 'http://musicbrainz.org/ws/2/';
 
