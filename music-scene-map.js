@@ -27,10 +27,10 @@ $(document).ready( function () {
         cache     : cache
     });
 
-    var interval_id;
     var markers = [];
     var popups = {};
     var mbid;
+    var mb_request_times = [];
 
     $('form#artist-lookup').submit(lookup_artist);
     $('form#artist-search').submit(search_artists);
@@ -107,9 +107,6 @@ $(document).ready( function () {
     function fetch_artist_info (mbid) {
 
         // Clean up any previous runs:
-        if ( interval_id !== null ) {
-            window.clearInterval(interval_id);
-        }
         markers.forEach( function (m) {
             map.removeLayer(m);
         });
@@ -161,22 +158,34 @@ $(document).ready( function () {
                 submit_mb_artist_request(artist);
             }
             
-            // window.clearInterval(interval_id); //abort!
-            // if ( ++i >= 10 ) {
-            //     window.clearInterval(interval_id);
-            //     $('img.spinner').slideUp();
-            // }
             if ( ++i >= lastfm_data.similarartists.artist.length ) {
-                window.clearInterval(interval_id);
                 $('img.spinner').slideUp();
+            }
+            else {
+                enqueue_mb_request(next_mb_artist);
             }
         };
         
-        // You're not supposed to hit the MusicBrainz webservice more than
-        // once per second on average.
-        interval_id = window.setInterval(next_mb_artist, 1000);
+        enqueue_mb_request(next_mb_artist);
+    }
+
+    // You're not supposed to hit the MusicBrainz webservice more than
+    // once per second on average.
+    function enqueue_mb_request (callback) {
+        var delay = 0;
+        var max_requests = 5;
+        var period = 5500;
+        while ( mb_request_times.length >= max_requests ) {
+            delay += mb_request_times.shift() - Date.now() + period;
+        }
+        console.log(delay);
+        window.setTimeout(callback, Math.max(delay, 0));
     }
     
+    function dequeue_mb_request () {
+        mb_request_times.push(Date.now());
+    }
+
     function submit_mb_artist_request (artist) {
         $.ajax({
             url: mb_api_url + 'artist/'
@@ -186,6 +195,7 @@ $(document).ready( function () {
                 handle_mb_artist_reponse(artist, data);
             }
         });
+        dequeue_mb_request();
     }
 
     function handle_mb_artist_reponse (artist, mb_data) {
@@ -237,6 +247,7 @@ $(document).ready( function () {
                     dataType: 'xml',
                     success: handle_mb_area_reponse
                 });
+                dequeue_mb_request();
             }
             var content = popups[area_mbid].getContent();
             $(content).find('ul').append($('<li/>').text(artist_name));
