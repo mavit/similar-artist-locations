@@ -3,6 +3,5 @@
 - Refactor MusicBrainz request queuing.
 - Investigate bower (https://github.com/bower/bower) for dependency management.
 - Error handling!
-- Pull location from WikiData if no GeoNames link.
 - Replace Purl, which is no-longer maintained.
 - Host at mavit.org.uk.

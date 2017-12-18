@@ -274,33 +274,53 @@ $(document).ready( function () {
         var geonames_url = $(mb_data).find(
             'area > relation-list > relation[type=geonames] > target'
         ).slice(0, 1).text();
-
-        if ( geonames_url == '' ) {
-            $(
-                'a[href="https://musicbrainz.org/area/'
-                    + encodeURIComponent(area_mbid) + '"]'
-            ).parent().append(' (no coordinates for this location)');
-            return;
-        }
+        var wikidata_url = $(mb_data).find(
+            'area > relation-list > relation[type=wikidata] > target'
+        ).slice(0, 1).text();
 
         // FIXME: Is this appropriate?
-        function GeonamesUrlFormatException(value) {
+        function urlFormatException(value) {
             this.value = value;
-            this.message = "does not look like a valid GeoNames URL";
+            this.message = "does not look like an expected URL";
             this.toString = function() {
                 return this.value + this.message
             };
         }
-        if ( ! /^https?:\/\/sws.geonames.org\/\d+\/$/.test(geonames_url) ) {
-            throw GeonamesUrlFormatException(geonames_url);
-        };
 
-        $.ajax({
-            url: encodeURI(geonames_url + 'about.rdf'),
-            dataType: 'xml',
-            success: handle_geonames_reponse
-        });
-    
+        if ( geonames_url != '' ) {
+            if ( ! /^https?:\/\/sws.geonames.org\/\d+\/$/.test(geonames_url) ) {
+
+                throw urlFormatException(geonames_url);
+            };
+
+            $.ajax({
+                url: encodeURI(geonames_url + 'about.rdf'),
+                dataType: 'xml',
+                success: handle_geonames_reponse
+            });
+        }
+        else if ( wikidata_url != false ) {
+            var wikidata_url_matches =
+                /^https?:\/\/www.wikidata.org\/wiki\/(Q\d+)$/.exec(wikidata_url);
+            if ( wikidata_url_matches == null ) {
+                throw urlFormatException(wikidata_url);
+            }
+            var wikidata_id = wikidata_url_matches[1];
+
+            $.ajax({
+                url: encodeURI("https://www.wikidata.org/wiki/Special:EntityData/" + wikidata_id  + '.json'),
+                dataType: 'json',
+                success: handle_wikidata_reponse
+            });
+
+        }
+        else {
+            $(
+                'a[href="https://musicbrainz.org/area/'
+                    + encodeURIComponent(area_mbid) + '"]'
+            ).parent().append(' (no coordinates for this location)');
+        }
+
         function handle_geonames_reponse (geonames_data) {
             var name = $(geonames_data).find('gn\\:name').text();
             var latitude = Number(
@@ -309,7 +329,16 @@ $(document).ready( function () {
             var longitude = Number(
                 $(geonames_data).find('wgs84_pos\\:long').text()
             );
-            
+
+            add_marker(latitude, longitude);
+        }
+
+        function handle_wikidata_reponse (wikidata_data) {
+            var value = wikidata_data["entities"][wikidata_id]["claims"]["P625"][0]["mainsnak"]["datavalue"]["value"];
+            add_marker(value["latitude"], value["longitude"]);
+        }
+
+        function add_marker (latitude, longitude) {
             var marker = L.mapbox.marker.style(
                 {
                     'type': 'Feature',
