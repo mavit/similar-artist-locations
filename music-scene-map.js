@@ -192,7 +192,6 @@ $(document).ready( function () {
         while ( mb_request_times.length >= max_requests ) {
             delay += mb_request_times.shift() - Date.now() + period;
         }
-        console.log(delay);
         window.setTimeout(callback, Math.max(delay, 0));
     }
     
