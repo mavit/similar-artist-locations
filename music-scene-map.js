@@ -14,7 +14,7 @@
 
 // You should have received a copy of the GNU General Public License
 // along with similar-artist-locations.  If not, see
-// <http://www.gnu.org/licenses/>.
+// <https://www.gnu.org/licenses/>.
 
 function resize () {
     var content_height = $(window).height() - $('header').outerHeight(true)
@@ -32,7 +32,7 @@ $(document).ready( function () {
     resize();
 
     var map = L.mapbox.map('map', 'mavit.h2hp2k2k').setView([25, 0], 2);
-    var mb_api_url = 'http://musicbrainz.org/ws/2/';
+    var mb_api_url = 'https://musicbrainz.org/ws/2/';
 
     var cache = new LastFMCache();
     var lastfm = new LastFM({
@@ -94,7 +94,7 @@ $(document).ready( function () {
                     ),
                     $('<td/>').append(
                         $('<a/>').attr({
-                            href: 'http://musicbrainz.org/area/'
+                            href: 'https://musicbrainz.org/area/'
                                 + encodeURIComponent(
                                     $(this).find('artist > area').attr('id')
                                 )
@@ -238,7 +238,7 @@ $(document).ready( function () {
                 $('<td/>').append(
                     $('<a/>')
                         .attr({
-                            href: 'http://musicbrainz.org/area/'
+                            href: 'https://musicbrainz.org/area/'
                                 + encodeURIComponent(area_mbid)
                         })
                         .text(area_name)
@@ -277,7 +277,7 @@ $(document).ready( function () {
 
         if ( geonames_url == '' ) {
             $(
-                'a[href="http://musicbrainz.org/area/'
+                'a[href="https://musicbrainz.org/area/'
                     + encodeURIComponent(area_mbid) + '"]'
             ).parent().append(' (no coordinates for this location)');
             return;
