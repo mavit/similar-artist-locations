@@ -1,4 +1,3 @@
-- Caching of MusicBrainz requests.
 - Link out to Family Trees, Amazon, etc.
 - Refactor MusicBrainz request queuing.
 - Investigate bower (https://github.com/bower/bower) for dependency management.

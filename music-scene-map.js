@@ -176,23 +176,35 @@ $(document).ready( function () {
                 $('img.spinner').slideUp();
             }
             else {
-                enqueue_mb_request(next_mb_artist);
+                enqueue_mb_request(
+                    next_mb_artist,
+                    lastfm_data.similarartists.artist[i].mbid
+                );
             }
         };
-        
-        enqueue_mb_request(next_mb_artist);
+
+        enqueue_mb_request(
+            next_mb_artist,
+            lastfm_data.similarartists.artist[i].mbid
+        );
     }
 
     // You're not supposed to hit the MusicBrainz webservice more than
     // once per second on average.
-    function enqueue_mb_request (callback) {
+    function enqueue_mb_request (callback, mbid) {
         var delay = 0;
         var max_requests = 5;
         var period = 5500;
-        while ( mb_request_times.length >= max_requests ) {
-            delay += mb_request_times.shift() - Date.now() + period;
+
+        if ( sessionStorage.getItem(mbid) == null ) {
+            while ( mb_request_times.length >= max_requests ) {
+                delay += mb_request_times.shift() - Date.now() + period;
+            }
+            window.setTimeout(callback, Math.max(delay, 0));
         }
-        window.setTimeout(callback, Math.max(delay, 0));
+        else {
+            window.setTimeout(callback, 0);
+        }
     }
     
     function dequeue_mb_request () {
@@ -200,15 +212,29 @@ $(document).ready( function () {
     }
 
     function submit_mb_artist_request (artist) {
-        $.ajax({
-            url: mb_api_url + 'artist/'
-                + encodeURIComponent(artist.mbid),
-            dataType: 'xml',
-            success: function (data) {
-                handle_mb_artist_reponse(artist, data);
-            }
-        });
-        dequeue_mb_request();
+        if ( sessionStorage.getItem(artist.mbid) == null ) {
+            $.ajax({
+                url: mb_api_url + 'artist/'
+                    + encodeURIComponent(artist.mbid),
+                dataType: 'xml',
+                success: function (data) {
+                    var xmls = new XMLSerializer();
+                    sessionStorage.setItem(
+                        artist.mbid,
+                        xmls.serializeToString(data)
+                    );
+
+                    handle_mb_artist_reponse(artist, data);
+                }
+            });
+            dequeue_mb_request();
+        }
+        else {
+            handle_mb_artist_reponse(
+                artist,
+                $.parseXML(sessionStorage.getItem(artist.mbid))
+            );
+        }
     }
 
     function handle_mb_artist_reponse (artist, mb_data) {
@@ -254,14 +280,36 @@ $(document).ready( function () {
                         $('<ul/>')
                     ).get(0)
                 );
-                $.ajax({
-                    url: mb_api_url + 'area/' + encodeURIComponent(area_mbid)
-                        + '?inc=url-rels',
-                    dataType: 'xml',
-                    success: handle_mb_area_reponse
-                });
-                dequeue_mb_request();
+
+                enqueue_mb_request(
+                    function () {
+                        var area_xml = sessionStorage.getItem(area_mbid);
+                        if ( area_xml == null ) {
+                            $.ajax({
+                                url: mb_api_url
+                                    + 'area/' + encodeURIComponent(area_mbid)
+                                    + '?inc=url-rels',
+                                dataType: 'xml',
+                                success: function (data) {
+                                    var xmls = new XMLSerializer();
+                                    sessionStorage.setItem(
+                                        area_mbid,
+                                        xmls.serializeToString(data)
+                                    );
+
+                                    handle_mb_area_reponse(data);
+                                }
+                            });
+                            dequeue_mb_request();
+                        }
+                        else {
+                            handle_mb_area_reponse($.parseXML(area_xml));
+                        }
+                    },
+                    area_mbid
+                );
             }
+
             var content = popups[area_mbid].getContent();
             $(content).find('ul').append($('<li/>').text(artist_name));
             popups[area_mbid].setContent(content);
