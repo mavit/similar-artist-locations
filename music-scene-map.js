@@ -50,7 +50,7 @@ $(document).ready( function () {
     $('form#artist-search').submit(search_artists);
     $('form#artist-picker').submit(pick_artist);
 
-    if ( mbid = $.url().param('mbid') ) {
+    if ( mbid = new URL(window.location.href).searchParams.get('mbid') ) {
         fetch_artist_info(mbid);
     }
 

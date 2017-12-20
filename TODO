@@ -3,5 +3,4 @@
 - Refactor MusicBrainz request queuing.
 - Investigate bower (https://github.com/bower/bower) for dependency management.
 - Error handling!
-- Replace Purl, which is no-longer maintained.
 - Host at mavit.org.uk.
