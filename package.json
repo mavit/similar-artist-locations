@@ -12,7 +12,11 @@
     },
     "license": "GPL-3.0+",
     "dependencies": {
+        "jquery": "^3.2.1",
         "js-polyfills": "^0.1.41"
     },
-    "private": true
+    "private": true,
+    "devDependencies": {
+        "jquery-migrate": "^3.0.1"
+    }
 }

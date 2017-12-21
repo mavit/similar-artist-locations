@@ -26,7 +26,7 @@ function resize () {
     });
 };
 
-$(window).resize(resize);
+$(window).on("resize", resize);
 
 $(document).ready( function () {
     resize();
@@ -46,9 +46,9 @@ $(document).ready( function () {
     var mbid;
     var mb_request_times = [];
 
-    $('form#artist-lookup').submit(lookup_artist);
-    $('form#artist-search').submit(search_artists);
-    $('form#artist-picker').submit(pick_artist);
+    $('form#artist-lookup').on("submit", lookup_artist);
+    $('form#artist-search').on("submit", search_artists);
+    $('form#artist-picker').on("submit", pick_artist);
 
     if ( mbid = new URL(window.location.href).searchParams.get('mbid') ) {
         fetch_artist_info(mbid);
@@ -105,10 +105,13 @@ $(document).ready( function () {
                 )
             );
         });
-        $('form#artist-picker button').click( function () {
-            mbid = this.value;
-            $('input#name').val($(this).text());
-        });
+        $('form#artist-picker button').on(
+            "click",
+            function () {
+                mbid = this.value;
+                $('input#name').val($(this).text());
+            }
+        );
         $('form#artist-picker').slideDown();
     }
 
