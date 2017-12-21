@@ -31,6 +31,7 @@ $(window).on("resize", resize);
 $(document).ready( function () {
     resize();
 
+    L.mapbox.accessToken = 'pk.eyJ1IjoibWF2aXQiLCJhIjoiY2piZ3J2ZTNnMmh6bzJwbXhtbzQxd3J6bSJ9.wB3unD3-Nzucj4awpQEtqg';
     var map = L.mapbox.map('map', 'mavit.h2hp2k2k').setView([25, 0], 2);
     var mb_api_url = 'https://musicbrainz.org/ws/2/';
 
