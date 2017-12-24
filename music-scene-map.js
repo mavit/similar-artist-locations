@@ -55,6 +55,8 @@ $(document).ready( function () {
         fetch_artist_info(mbid);
     }
 
+    $.tooltipster.group('artist-info-tooltip');
+
     function search_artists (event) {
         event.preventDefault();
         $('form#artist-picker').slideUp();
@@ -373,6 +375,7 @@ $(document).ready( function () {
                 $('<td/>').append(
                     $('<a/>')
                         .attr({
+                            class: 'artist-info-tooltip',
                             href: '?mbid=' + encodeURIComponent(artist_mbid),
                             'data-tooltip-content': '#tooltip_'
                                 + $.escapeSelector(artist_mbid)

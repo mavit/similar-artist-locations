@@ -14,6 +14,10 @@ js-polyfills@^0.1.41:
   version "0.1.41"
   resolved "https://registry.yarnpkg.com/js-polyfills/-/js-polyfills-0.1.41.tgz#00f3f029c3be054cb8854dd2da320660d0433731"
 
+tooltipster-discovery@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/tooltipster-discovery/-/tooltipster-discovery-1.0.2.tgz#df23d921e2d911e269946947d39f34ad9f767b7a"
+
 tooltipster@^4.2.5:
   version "4.2.5"
   resolved "https://registry.yarnpkg.com/tooltipster/-/tooltipster-4.2.5.tgz#e492fc3984576418f8c18b1aaee1456c1bd8b0a9"
