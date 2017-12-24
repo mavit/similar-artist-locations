@@ -134,7 +134,7 @@ $(document).ready( function () {
         $('table#artists > tbody').empty();
         $('table#artists > caption').empty();
 
-        $('img.spinner').slideDown();
+        $('div#sidebar > img.spinner').slideDown();
         $('table#artists > tbody').fadeIn();
         $('div#sidebar').show('400');
 
@@ -177,7 +177,7 @@ $(document).ready( function () {
             }
             
             if ( ++i >= lastfm_data.similarartists.artist.length ) {
-                $('img.spinner').slideUp();
+                $('div#sidebar > img.spinner').slideUp();
             }
             else {
                 enqueue_mb_request(
@@ -255,14 +255,141 @@ $(document).ready( function () {
         var area_mbid = area.attr('id');
         var area_name = area.children('name').text();
         
+        $('div#tooltips').append(
+            $('<div/>')
+                .attr({
+                    id: 'tooltip_' + artist_mbid
+                })
+                .append(
+                    $('<a/>')
+                        .attr({
+                            href: $(this).attr('href'),
+                            class: 'photo'
+                        })
+                        .append(
+                            $('<img/>')
+                                .attr({
+                                    class: 'spinner',
+                                    src: 'images/spinner.gif'
+                                })
+                        ),
+                    $('<a/>')
+                        .attr({
+                            href: 'https://www.bbc.co.uk/music/artists/'
+                                + encodeURIComponent(artist_mbid),
+                            title: 'BBC Music'
+                        })
+                        .append(
+                            $('<img/>')
+                                .attr({
+                                    class: 'icon',
+                                    alt: '[BBC Music]',
+                                    src: 'images/bbc-icon.png'
+                                })
+                        ),
+                    $('<a/>')
+                        .attr({
+                            href:
+                            'https://musicbrainz.org/artis/t'
+                                + encodeURIComponent(artist_mbid),
+                            title: 'MusicBrainz'
+                        })
+                        .append(
+                            $('<img/>')
+                                .attr({
+                                    class: 'icon',
+                                    alt: '[MusicBrainz]',
+                                    src: 'images/musicbrainz-icon.png'
+                                })
+                        ),
+                    $('<a/>')
+                        .attr({
+                            href:
+                            'https://www.mavit.org.uk/familytree/mbid/'
+                                + encodeURIComponent(artist_mbid),
+                            title: 'Family Trees'
+                        })
+                        .append(
+                            $('<img/>')
+                                .attr({
+                                    class: 'icon',
+                                    alt: '[Family Trees]',
+                                    src: 'images/squares-logo.png'
+                                })
+                        ),
+                    $('<a/>')
+                        .attr({
+                            href:
+                            'https://last.fm/mbid/'
+                                + encodeURIComponent(artist_mbid),
+                            title: 'Last.fm'
+                        })
+                        .append(
+                            $('<img/>')
+                                .attr({
+                                    class: 'icon',
+                                    alt: '[Last.fm]',
+                                    src: 'images/lastfm-icon.png'
+                                })
+                        ),
+                    // FIXME: use
+                    // http://developer.echonest.com/docs/v4#project-rosetta-stone to get
+                    // Spotify URL from MBID.  e.g.,
+                    // http://developer.echonest.com/api/v4/artist/similar?api_key=FILDTEOIK2HBORODV&format=json&bucket=id:spotify-WW&id=musicbrainz:artist:258787d8-07e4-4ad8-9c5a-89b3908796b0
+                    $('<a/>')
+                        .attr({
+                            href:
+                            'https://open.spotify.com/search/'
+                                + encodeURIComponent(artist_name),
+                            title: 'Spotify'
+                        })
+                        .append(
+                            $('<img/>')
+                                .attr({
+                                    class: 'icon',
+                                    alt: '[Spotify]',
+                                    src: 'images/spotify-icon.png'
+                                })
+                        ),
+                    $('<a/>')
+                        .attr({
+                            href:
+                            'https://www.amazon.co.uk/gp/redirect.html?ie=UTF8&location=http%3A%2F%2Fwww.amazon.co.uk%2Fs%3Fie%3DUTF8%26search-alias%3Dmusic%26field-artist%3D' + encodeURIComponent(encodeURIComponent(artist_name)) + '&tag=mavitorguk-21&linkCode=ur2&camp=1634&creative=19450',
+                            title: 'Amazon'
+                        })
+                        .append(
+                            $('<img/>')
+                                .attr({
+                                    class: 'icon',
+                                    alt: '[Amazon]',
+                                    src: 'images/amazon-icon.png'
+                                })
+                        )
+                )
+        );
+
         $('table#artists > tbody').append(
             $('<tr/>').append(
                 $('<td/>').append(
                     $('<a/>')
                         .attr({
-                            href: '?mbid=' + encodeURIComponent(artist_mbid)
+                            href: '?mbid=' + encodeURIComponent(artist_mbid),
+                            'data-tooltip-content': '#tooltip_'
+                                + $.escapeSelector(artist_mbid)
                         })
                         .text(artist_name)
+                        .tooltipster({
+                            interactive: true,
+                            theme: [
+                                'tooltipster-shadow',
+                                'tooltipster-shadow-mavit'
+                            ],
+                            functionReady: function (instance, helper) {
+                                add_image_to_tooltip(
+                                    instance, helper.tooltip, artist_mbid
+                                );
+                            }
+                        })
                 ),
                 $('<td/>').append(
                     $('<a/>')
@@ -274,7 +401,7 @@ $(document).ready( function () {
                 )
             )
         );
-        
+
         if ( area_mbid != null ) {
             if ( typeof popups[area_mbid] === 'undefined' ) {
                 popups[area_mbid] = L.popup().setContent(
@@ -407,5 +534,55 @@ $(document).ready( function () {
             marker.bindPopup(popups[area_mbid]);
             marker.addTo(map);
         }
+    }
+
+    function add_image_to_tooltip (tooltipster, tooltip, mbid) {
+        if ( tooltip.querySelector('img.photo') != null ) {
+            // Image was added previously.
+            return;
+        }
+
+        var spinner_selector = '#tooltip_' + $.escapeSelector(mbid)
+            + ' img.spinner';
+
+        lastfm.artist.getInfo(
+            {
+                mbid: mbid
+            },
+            {
+                success: function (data) {
+                    var images = data.artist.image;
+                    var image_url;
+                    for ( var i = 0; i < images.length; i++ ) {
+                        image_url = images[i]['#text'];
+                        if ( images[i]['size'] == "extralarge"
+                             || images[i]['size'] == "" ) {
+                            break;
+                        }
+                    }
+                    if ( image_url == "" ) {
+                        $(spinner_selector).slideUp('fast');
+                    }
+                    else {
+                        $(spinner_selector).after(
+                            $('<img/>').attr({
+                                class: 'photo',
+                                src: image_url
+                            }).hide().on(
+                                "load",
+                                function () {
+                                    $(spinner_selector).slideUp('fast');
+                                    $(this).slideDown('fast');
+//                                    tooltipster.reposition();
+                                }
+                            )
+                        );
+                    }
+                },
+                error: function (code, message) {
+                    $(spinner_selector).slideUp('fast');
+                }
+            }
+        );
     }
 });

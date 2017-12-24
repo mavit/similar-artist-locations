@@ -49,6 +49,13 @@
     <script type="text/javascript"
             src="https://api.tiles.mapbox.com/mapbox.js/v3.1.1/mapbox.js"></script>
 
+    <link rel="stylesheet" type="text/css"
+          href="node_modules/tooltipster/dist/css/tooltipster.bundle.min.css" />
+    <link rel="stylesheet" type="text/css"
+          href="node_modules/tooltipster/dist/css/plugins/tooltipster/sideTip/themes/tooltipster-sideTip-shadow.min.css" />
+    <script type="text/javascript"
+            src="node_modules/tooltipster/dist/js/tooltipster.bundle.js"></script>
+
     <script type="text/javascript" src="music-scene-map.js"></script>
 
     <style type="text/css">
@@ -81,6 +88,30 @@
           margin-left: auto;
           margin-right: auto;
           margin-bottom: 1em;
+      }
+      div#tooltips {
+          display: none;
+      }
+      div.tooltipster-base {
+          background: none;
+          padding: 0;
+          margin: 0;
+          border-radius: 0;
+          box-shadow: none;
+      }
+      .tooltipster-sidetip.tooltipster-shadow.tooltipster-shadow-mavit .tooltipster-box {
+          box-shadow: inset 0 0 1ex grey, 0 0 1ex black;
+      }
+      img.icon {
+          margin: 10px 2px 0px 2px;
+      }
+      a.photo {
+          display: block;
+          min-width: 300px;
+          min-height: 300px;
+      }
+      div.tooltipster-content {
+          text-align: center;
       }
     </style>
 </head>
@@ -141,6 +172,7 @@
   </div>
 
   <div id="map"></div>
+  <div id="tooltips"></div>
 
   <footer>
     <p>
