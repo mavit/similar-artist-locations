@@ -3,8 +3,8 @@
     "version": "0.2",
     "description": "Similar artists in similar places.",
     "homepage": "https://www.mavit.org.uk/music-scene-map/",
-    "bugs": "https://github.com/mavit/similar-artist-locations/issues",
-    "repository": "https://github.com/mavit/similar-artist-locations.git",
+    "bugs": "https://github.com/mavit/music-scene-map/issues",
+    "repository": "https://github.com/mavit/music-scene-map.git",
     "author": {
         "name": "Peter Oliver",
         "email": "git@mavit.org.uk",
