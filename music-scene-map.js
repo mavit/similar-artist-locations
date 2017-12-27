@@ -469,13 +469,21 @@ $(document).ready( function () {
         }
 
         if ( geonames_url != '' ) {
-            if ( ! /^https?:\/\/sws.geonames.org\/\d+\/$/.test(geonames_url) ) {
+            if ( ! /^https?:\/\/(?:sws|secure).geonames.org\/\d+\/$/.test(geonames_url) ) {
 
                 throw urlFormatException(geonames_url);
             };
 
+            geonames_about_url = new URL('about.rdf', geonames_url);
+            if ( geonames_about_url.protocol == 'http:' ) {
+                geonames_about_url.protocol = 'https:';
+                if ( geonames_about_url.hostname == 'sws.geonames.org' ) {
+                    geonames_about_url.hostname = 'secure.geonames.org';
+                }
+            }
+
             $.ajax({
-                url: encodeURI(geonames_url + 'about.rdf'),
+                url: encodeURI(geonames_about_url),
                 dataType: 'xml',
                 success: handle_geonames_reponse
             });
