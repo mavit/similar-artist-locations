@@ -26,6 +26,14 @@ function resize () {
     });
 };
 
+// https://lucene.apache.org/core/7_2_0/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#Escaping_Special_Characters
+function lucence_escape (string) {
+    return string.replace(
+        /(AND|OR|NOT|\+|-|&&|\|\||!|\(|\)|{|}|\[|\]|\^|\"|~|\*|\?|:|\\|\/)/g,
+        '\\$1'
+    );
+}
+
 $(window).on("resize", resize);
 
 $(document).ready( function () {
@@ -62,7 +70,7 @@ $(document).ready( function () {
         $('form#artist-picker').slideUp();
         $.ajax({
             url: mb_api_url + 'artist/?query='
-                + encodeURIComponent($('input#name').val()),
+                + encodeURIComponent(lucence_escape($('input#name').val())),
             dataType: 'xml',
             success: handle_mb_search_response
         });
