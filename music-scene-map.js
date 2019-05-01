@@ -327,21 +327,6 @@ $(document).ready( function () {
                                     src: 'images/squares-logo.png'
                                 })
                         ),
-                    $('<a/>')
-                        .attr({
-                            href:
-                            'https://last.fm/mbid/'
-                                + encodeURIComponent(artist_mbid),
-                            title: 'Last.fm'
-                        })
-                        .append(
-                            $('<img/>')
-                                .attr({
-                                    class: 'icon',
-                                    alt: '[Last.fm]',
-                                    src: 'images/lastfm-icon.png'
-                                })
-                        ),
                     // FIXME: use
                     // http://developer.echonest.com/docs/v4#project-rosetta-stone to get
                     // Spotify URL from MBID.  e.g.,
@@ -349,7 +334,7 @@ $(document).ready( function () {
                     $('<a/>')
                         .attr({
                             href:
-                            'https://open.spotify.com/search/'
+                            'https://open.spotify.com/search/artists/'
                                 + encodeURIComponent(artist_name),
                             title: 'Spotify'
                         })
