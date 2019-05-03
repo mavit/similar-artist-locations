@@ -5,19 +5,24 @@
 jquery-migrate@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/jquery-migrate/-/jquery-migrate-3.0.1.tgz#141de3abfe6d301baaa4130b0ec7b9a839845e72"
+  integrity sha512-NYlhcFnRh4Bv9jvadPlcAKQdVGRE0+TSgFYxQ+ZnCxUUHbwd+SjbOg+Xvu1Oea9mpQJ+2VB1eCfcBORWNQsHaA==
 
 jquery@^3.2.1:
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.2.1.tgz#5c4d9de652af6cd0a770154a631bba12b015c787"
+  version "3.4.1"
+  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.4.1.tgz#714f1f8d9dde4bdfa55764ba37ef214630d80ef2"
+  integrity sha512-36+AdBzCL+y6qjw5Tx7HgzeGCzC81MDDgaUP8ld2zhx58HdqXGoBd+tHdrBMiyjGQs0Hxs/MLZTu/eHNJJuWPw==
 
 js-polyfills@^0.1.41:
-  version "0.1.41"
-  resolved "https://registry.yarnpkg.com/js-polyfills/-/js-polyfills-0.1.41.tgz#00f3f029c3be054cb8854dd2da320660d0433731"
+  version "0.1.42"
+  resolved "https://registry.yarnpkg.com/js-polyfills/-/js-polyfills-0.1.42.tgz#5d484902b361e3cf601fd23ad0f30bafcc93f148"
+  integrity sha1-XUhJArNh489gH9I60PMLr8yT8Ug=
 
 tooltipster-discovery@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/tooltipster-discovery/-/tooltipster-discovery-1.0.2.tgz#df23d921e2d911e269946947d39f34ad9f767b7a"
+  integrity sha1-3yPZIeLZEeJplGlH0580rZ92e3o=
 
 tooltipster@^4.2.5:
-  version "4.2.5"
-  resolved "https://registry.yarnpkg.com/tooltipster/-/tooltipster-4.2.5.tgz#e492fc3984576418f8c18b1aaee1456c1bd8b0a9"
+  version "4.2.6"
+  resolved "https://registry.yarnpkg.com/tooltipster/-/tooltipster-4.2.6.tgz#fbf7a3f5b40bd83e81574e28d9667cf82667bc79"
+  integrity sha1-+/ej9bQL2D6BV04o2WZ8+CZnvHk=
