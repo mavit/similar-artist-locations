@@ -474,6 +474,7 @@ $(document).ready( function () {
                     geonames_about_url.hostname = 'secure.geonames.org';
                 }
             }
+            geonames_about_url.searchParams.set('username', 'mavit');
 
             $.ajax({
                 url: encodeURI(geonames_about_url),
