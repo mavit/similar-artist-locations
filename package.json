@@ -12,7 +12,7 @@
     },
     "license": "GPL-3.0+",
     "dependencies": {
-        "jquery": "^3.2.1",
+        "jquery": "^3.5.0",
         "js-polyfills": "^0.1.41",
         "tooltipster": "^4.2.5",
         "tooltipster-discovery": "^1.0.2"
