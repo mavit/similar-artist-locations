@@ -286,20 +286,6 @@ $(document).ready( function () {
                         ),
                     $('<a/>')
                         .attr({
-                            href: 'https://www.bbc.co.uk/music/artists/'
-                                + encodeURIComponent(artist_mbid),
-                            title: 'BBC Music'
-                        })
-                        .append(
-                            $('<img/>')
-                                .attr({
-                                    class: 'icon',
-                                    alt: '[BBC Music]',
-                                    src: 'images/bbc-icon.png'
-                                })
-                        ),
-                    $('<a/>')
-                        .attr({
                             href:
                             'https://musicbrainz.org/artis/t'
                                 + encodeURIComponent(artist_mbid),
