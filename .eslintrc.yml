@@ -7,7 +7,6 @@ globals:
   L: true
   LastFM: true
   LastFMCache: true
-  Modernizr: true
 parserOptions:
   ecmaVersion: 12
 plugins:

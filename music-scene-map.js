@@ -83,9 +83,7 @@ $(document).ready( function () {
         $('form#artist-picker').slideUp();
         $('table#artists > tbody').fadeOut();
 
-        if ( Modernizr.history ) {
-            history.pushState({}, '', '?mbid=' + encodeURIComponent(mbid));
-        }
+        history.pushState({}, '', '?mbid=' + encodeURIComponent(mbid));
 
         fetch_artist_info(mbid);
     }
