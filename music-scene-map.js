@@ -273,78 +273,91 @@ $(document).ready( function () {
         $('div#tooltips').append(
             $('<div/>')
                 .attr({
+                    class: 'tooltip',
                     id: 'tooltip_' + artist_mbid
                 })
                 .append(
-                    $('<a/>')
+                    $('<div/>')
                         .attr({
-                            class: 'photo'
+                            class: 'column'
                         })
                         .append(
-                            $('<img/>')
+                            $('<a/>')
                                 .attr({
-                                    class: 'spinner',
-                                    src: 'images/spinner.gif'
+                                    class: 'photo'
                                 })
+                                .append(
+                                    $('<img/>')
+                                        .attr({
+                                            class: 'spinner vertical',
+                                            src: 'images/spinner.gif'
+                                        })
+                                ),
                         ),
-                    $('<a/>')
+                    $('<div/>')
                         .attr({
-                            href:
-                            'https://musicbrainz.org/artist/'
-                                + encodeURIComponent(artist_mbid),
-                            title: 'MusicBrainz'
+                            class: 'column'
                         })
                         .append(
-                            $('<img/>')
+                            $('<a/>')
                                 .attr({
-                                    class: 'icon',
-                                    alt: '[MusicBrainz]',
-                                    src: 'images/musicbrainz-icon.png'
+                                    href:
+                                    'https://musicbrainz.org/artist/'
+                                        + encodeURIComponent(artist_mbid),
+                                    title: 'MusicBrainz'
                                 })
-                        ),
-                    $('<a/>')
-                        .attr({
-                            href:
-                            'https://www.mavit.org.uk/familytree/mbid/'
-                                + encodeURIComponent(artist_mbid),
-                            title: 'Family Trees'
-                        })
-                        .append(
-                            $('<img/>')
+                                .append(
+                                    $('<img/>')
+                                        .attr({
+                                            class: 'icon',
+                                            alt: '[MusicBrainz]',
+                                            src: 'images/musicbrainz-icon.png'
+                                        })
+                                ),
+                            $('<a/>')
                                 .attr({
-                                    class: 'icon',
-                                    alt: '[Family Trees]',
-                                    src: 'images/squares-logo.png'
+                                    href:
+                                    'https://www.mavit.org.uk/familytree/mbid/'
+                                        + encodeURIComponent(artist_mbid),
+                                    title: 'Family Trees'
                                 })
-                        ),
-                    $('<a/>')
-                        .attr({
-                            href:
-                            'https://open.spotify.com/search/artists/'
-                                + encodeURIComponent(artist_name),
-                            title: 'Spotify'
-                        })
-                        .append(
-                            $('<img/>')
+                                .append(
+                                    $('<img/>')
+                                        .attr({
+                                            class: 'icon',
+                                            alt: '[Family Trees]',
+                                            src: 'images/squares-logo.png'
+                                        })
+                                ),
+                            $('<a/>')
                                 .attr({
-                                    class: 'icon',
-                                    alt: '[Spotify]',
-                                    src: 'images/spotify-icon.png'
+                                    href:
+                                    'https://open.spotify.com/search/artists/'
+                                        + encodeURIComponent(artist_name),
+                                    title: 'Spotify'
                                 })
-                        ),
-                    $('<a/>')
-                        .attr({
-                            href:
-                            'https://www.amazon.co.uk/gp/redirect.html?ie=UTF8&location=http%3A%2F%2Fwww.amazon.co.uk%2Fs%3Fie%3DUTF8%26search-alias%3Dmusic%26field-artist%3D' + encodeURIComponent(encodeURIComponent(artist_name)) + '&tag=mavitorguk-21&linkCode=ur2&camp=1634&creative=19450',
-                            title: 'Amazon'
-                        })
-                        .append(
-                            $('<img/>')
+                                .append(
+                                    $('<img/>')
+                                        .attr({
+                                            class: 'icon',
+                                            alt: '[Spotify]',
+                                            src: 'images/spotify-icon.png'
+                                        })
+                                ),
+                            $('<a/>')
                                 .attr({
-                                    class: 'icon',
-                                    alt: '[Amazon]',
-                                    src: 'images/amazon-icon.png'
+                                    href:
+                                    'https://www.amazon.co.uk/gp/redirect.html?ie=UTF8&location=http%3A%2F%2Fwww.amazon.co.uk%2Fs%3Fie%3DUTF8%26search-alias%3Dmusic%26field-artist%3D' + encodeURIComponent(encodeURIComponent(artist_name)) + '&tag=mavitorguk-21&linkCode=ur2&camp=1634&creative=19450',
+                                    title: 'Amazon'
                                 })
+                                .append(
+                                    $('<img/>')
+                                        .attr({
+                                            class: 'icon',
+                                            alt: '[Amazon]',
+                                            src: 'images/amazon-icon.png'
+                                        })
+                                )
                         )
                 )
         );
