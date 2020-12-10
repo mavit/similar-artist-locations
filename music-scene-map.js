@@ -287,7 +287,7 @@ $(document).ready( function () {
                     $('<a/>')
                         .attr({
                             href:
-                            'https://musicbrainz.org/artis/t'
+                            'https://musicbrainz.org/artist/'
                                 + encodeURIComponent(artist_mbid),
                             title: 'MusicBrainz'
                         })
