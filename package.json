@@ -19,6 +19,8 @@
     },
     "private": true,
     "devDependencies": {
+        "eslint": "^7.15.0",
+        "eslint-plugin-only-warn": "^1.0.2",
         "jquery-migrate": "^3.0.1"
     }
 }
