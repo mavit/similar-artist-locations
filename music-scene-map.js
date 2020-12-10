@@ -314,10 +314,6 @@ $(document).ready( function () {
                                     src: 'images/squares-logo.png'
                                 })
                         ),
-                    // FIXME: use
-                    // http://developer.echonest.com/docs/v4#project-rosetta-stone to get
-                    // Spotify URL from MBID.  e.g.,
-                    // http://developer.echonest.com/api/v4/artist/similar?api_key=FILDTEOIK2HBORODV&format=json&bucket=id:spotify-WW&id=musicbrainz:artist:258787d8-07e4-4ad8-9c5a-89b3908796b0
                     $('<a/>')
                         .attr({
                             href:
