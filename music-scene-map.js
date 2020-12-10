@@ -24,12 +24,12 @@ function resize () {
     $("div#sidebar").css({
         'max-height': content_height
     });
-};
+}
 
 // https://lucene.apache.org/core/7_2_0/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#Escaping_Special_Characters
 function lucence_escape (string) {
     return string.replace(
-        /(AND|OR|NOT|\+|-|&&|\|\||!|\(|\)|{|}|\[|\]|\^|\"|~|\*|\?|:|\\|\/)/g,
+        /(AND|OR|NOT|\+|-|&&|\|\||!|\(|\)|{|}|\[|\]|\^|"|~|\*|\?|:|\\|\/)/g,
         '\\$1'
     );
 }
@@ -61,7 +61,8 @@ $(document).ready( function () {
     $('form#artist-search').on("submit", search_artists);
     $('form#artist-picker').on("submit", pick_artist);
 
-    if ( mbid = new URL(window.location.href).searchParams.get('mbid') ) {
+    mbid = new URL(window.location.href).searchParams.get('mbid')
+    if ( mbid ) {
         fetch_artist_info(mbid);
     }
 
@@ -465,9 +466,9 @@ $(document).ready( function () {
             if ( ! /^https?:\/\/(?:sws|secure).geonames.org\/\d+\/$/.test(geonames_url) ) {
 
                 throw urlFormatException(geonames_url);
-            };
+            }
 
-            geonames_about_url = new URL('about.rdf', geonames_url);
+            const geonames_about_url = new URL('about.rdf', geonames_url);
             if ( geonames_about_url.protocol == 'http:' ) {
                 geonames_about_url.protocol = 'https:';
                 if ( geonames_about_url.hostname == 'sws.geonames.org' ) {
@@ -505,7 +506,7 @@ $(document).ready( function () {
         }
 
         function handle_geonames_reponse (geonames_data) {
-            var name = $(geonames_data).find('gn\\:name').text();
+            // var name = $(geonames_data).find('gn\\:name').text();
             var latitude = Number(
                 $(geonames_data).find('wgs84_pos\\:lat').text()
             );
