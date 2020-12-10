@@ -230,7 +230,8 @@ $(document).ready( function () {
         if ( sessionStorage.getItem(artist.mbid) == null ) {
             $.ajax({
                 url: mb_api_url + 'artist/'
-                    + encodeURIComponent(artist.mbid),
+                    + encodeURIComponent(artist.mbid)
+                    + '?inc=url-rels',
                 dataType: 'xml',
                 success: function (data) {
                     var xmls = new XMLSerializer();
@@ -265,7 +266,10 @@ $(document).ready( function () {
         var artist_mbid = artist.mbid;
         var area_mbid = area.attr('id');
         var area_name = area.children('name').text();
-        
+        const image_url = $(mb_data).find(
+            'artist > relation-list > relation[type=image] > target'
+        ).slice(0, 1).text();
+
         $('div#tooltips').append(
             $('<div/>')
                 .attr({
@@ -274,7 +278,6 @@ $(document).ready( function () {
                 .append(
                     $('<a/>')
                         .attr({
-                            href: $(this).attr('href'),
                             class: 'photo'
                         })
                         .append(
@@ -358,6 +361,7 @@ $(document).ready( function () {
                         })
                         .text(artist_name)
                         .tooltipster({
+                            position: 'left',
                             interactive: true,
                             theme: [
                                 'tooltipster-shadow',
@@ -365,7 +369,10 @@ $(document).ready( function () {
                             ],
                             functionReady: function (instance, helper) {
                                 add_image_to_tooltip(
-                                    instance, helper.tooltip, artist_mbid
+                                    instance,
+                                    helper.tooltip,
+                                    artist_mbid,
+                                    image_url,
                                 );
                             }
                         })
@@ -524,53 +531,41 @@ $(document).ready( function () {
         }
     }
 
-    function add_image_to_tooltip (tooltipster, tooltip, mbid) {
+    function add_image_to_tooltip (tooltipster, tooltip, mbid, image_url) {
         if ( tooltip.querySelector('img.photo') != null ) {
             // Image was added previously.
             return;
         }
 
-        var spinner_selector = '#tooltip_' + $.escapeSelector(mbid)
-            + ' img.spinner';
-
-        lastfm.artist.getInfo(
-            {
-                mbid: mbid
-            },
-            {
-                success: function (data) {
-                    var images = data.artist.image;
-                    var image_url;
-                    for ( var i = 0; i < images.length; i++ ) {
-                        image_url = images[i]['#text'];
-                        if ( images[i]['size'] == "extralarge"
-                             || images[i]['size'] == "" ) {
-                            break;
-                        }
-                    }
-                    if ( image_url == "" ) {
-                        $(spinner_selector).slideUp('fast');
-                    }
-                    else {
-                        $(spinner_selector).after(
-                            $('<img/>').attr({
-                                class: 'photo',
-                                src: image_url
-                            }).hide().on(
-                                "load",
-                                function () {
-                                    $(spinner_selector).slideUp('fast');
-                                    $(this).slideDown('fast');
-//                                    tooltipster.reposition();
-                                }
-                            )
-                        );
-                    }
-                },
-                error: function (code, message) {
-                    $(spinner_selector).slideUp('fast');
-                }
+        if ( image_url == "" ) {
+            $(tooltip).find('a.photo').remove();
+        }
+        else {
+            const wikimedia_image_url = image_url.replace(
+                /^(https?:\/\/commons\.wikimedia\.org\/wiki\/)File:/,
+                '$1Special:FilePath/'
+            );
+            if ( image_url != wikimedia_image_url ) {
+                $(tooltip).find('a.photo').attr({
+                    'href': image_url,
+                });
+                image_url = wikimedia_image_url;
             }
-        );
+            console.log(image_url);
+            const spinner = $(tooltip).find('img.spinner');
+            spinner.after(
+                $('<img/>').attr({
+                    class: 'photo',
+                    src: image_url
+                }).hide().on(
+                    "load",
+                    function () {
+                        spinner.slideUp('fast');
+                        $(this).slideDown('fast');
+                        tooltipster.reposition();
+                    }
+                )
+            );
+        }
     }
 });
