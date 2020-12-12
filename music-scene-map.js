@@ -332,7 +332,7 @@ $(document).ready( function () {
                             $('<a/>')
                                 .attr({
                                     href:
-                                    'https://open.spotify.com/search/artists/'
+                                    'https://open.spotify.com/search/'
                                         + encodeURIComponent(artist_name),
                                     title: 'Spotify'
                                 })
